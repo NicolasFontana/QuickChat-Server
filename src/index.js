@@ -1,21 +1,24 @@
-import dotenv from 'dotenv'
-import mongoose from 'mongoose'
-import app from './app.js'
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import app from './app';
 
-dotenv.config()
+dotenv.config();
 
-const port = process.env.PORT
-const MONGODB_URL = process.env.MONGO_URL
+const port = process.env.PORT;
+const MONGODB_URL = process.env.MONGO_URL;
 
-mongoose.set('strictQuery', false)
+mongoose.set('strictQuery', false);
 
 mongoose.connect(MONGODB_URL, (error) => {
-  if(error) {
-    console.log('Database error: ', error)
+  if (error) {
+    // eslint-disable-next-line no-console
+    console.log('Database error: ', error);
   } else {
-    console.log('Database connected')
+    // eslint-disable-next-line no-console
+    console.log('Database connected');
     app.listen(port, () => {
-      console.log('App listening')
-    })
+      // eslint-disable-next-line no-console
+      console.log('App listening');
+    });
   }
-})
+});

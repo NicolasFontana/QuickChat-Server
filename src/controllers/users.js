@@ -1,5 +1,5 @@
-import User from "../models/Users";
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
+import User from '../models/Users';
 
 const createUser = async (req, res) => {
   try {
@@ -7,7 +7,7 @@ const createUser = async (req, res) => {
     const usernameCheck = await User.findOne({ username });
     if (usernameCheck) {
       return res.status(409).json({
-        message: "Username already exist",
+        message: 'Username already exist',
         data: null,
         error: true,
       });
@@ -15,7 +15,7 @@ const createUser = async (req, res) => {
     const emailCheck = await User.findOne({ email });
     if (emailCheck) {
       return res.status(409).json({
-        message: "Email already exist",
+        message: 'Email already exist',
         data: null,
         error: true,
       });
@@ -26,50 +26,50 @@ const createUser = async (req, res) => {
       email,
       password: hashedPassword,
     });
-    user.password = undefined
-    delete user.password
+    user.password = undefined;
+    delete user.password;
     return res.status(201).json({
-      message: "User created",
+      message: 'User created',
       data: user,
-      error: false
+      error: false,
     });
   } catch (error) {
     return res.status(500).json({
       message: error.message,
       data: null,
-      error: true
-    })
+      error: true,
+    });
   }
 };
 
 const getUser = async (req, res) => {
-  const { email, password } = req.body
-  const user = await User.findOne({ email })
-  if(!user) {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
     return res.status(401).json({
-      message: "Incorrect username or password",
+      message: 'Incorrect username or password',
       data: null,
-      error: true
-    })
+      error: true,
+    });
   }
-  const isPasswordValid = await bcrypt.compare(password, user.password)
-  if(!isPasswordValid) {
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
     return res.status(401).json({
-      message: "Incorrect username or password",
+      message: 'Incorrect username or password',
       data: null,
-      error: true
-    })
+      error: true,
+    });
   }
-  user.password = undefined
-  delete user.password
+  user.password = undefined;
+  delete user.password;
   return res.status(200).json({
-    message: "Login success",
+    message: 'Login success',
     data: user,
-    error: false
-  })
-}
+    error: false,
+  });
+};
 
 export default {
   createUser,
-  getUser
+  getUser,
 };
