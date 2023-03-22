@@ -3,7 +3,9 @@ import User from '../models/Users';
 
 const createUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const {
+      username, email, password, avatarImage,
+    } = req.body;
     const usernameCheck = await User.findOne({ username });
     if (usernameCheck) {
       return res.status(409).json({
@@ -25,6 +27,7 @@ const createUser = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      avatarImage,
     });
     user.password = undefined;
     delete user.password;
@@ -69,7 +72,47 @@ const getUser = async (req, res) => {
   });
 };
 
+const setAvatar = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        message: 'Missing id parameter',
+        data: null,
+        error: true,
+      });
+    }
+    const { avatarImage } = req.body;
+    const userUpdated = await User.findByIdAndUpdate(
+      id,
+      { avatarImage },
+      { new: true },
+    );
+    if (!userUpdated) {
+      return res.status(404).json({
+        message: 'The user has not been found',
+        data: null,
+        error: true,
+      });
+    }
+    userUpdated.password = undefined;
+    delete userUpdated.password;
+    return res.status(200).json({
+      message: 'The user has been updated successfully',
+      data: userUpdated,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      data: null,
+      error: true,
+    });
+  }
+};
+
 export default {
   createUser,
   getUser,
+  setAvatar,
 };
