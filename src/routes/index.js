@@ -1,8 +1,10 @@
 import express from 'express';
-import userRoutes from './users';
+import authRoutes from './auth';
+import usersRoutes from './users';
 
 const router = express.Router();
 
-router.use('/api/auth', userRoutes);
+router.use('/auth', authRoutes);
+router.use('/users', usersRoutes);
 
 export default router;
