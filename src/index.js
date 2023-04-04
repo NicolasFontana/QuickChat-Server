@@ -1,5 +1,7 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import { Server as WebsocketServer } from 'socket.io';
+import http from 'http';
 import app from './app';
 
 dotenv.config();
@@ -16,9 +18,41 @@ mongoose.connect(MONGODB_URL, (error) => {
   } else {
     // eslint-disable-next-line no-console
     console.log('Database connected');
-    app.listen(port, () => {
+    const server = http.createServer(app);
+    const httpServer = server.listen(port, () => {
       // eslint-disable-next-line no-console
       console.log('App listening');
     });
+    const io = new WebsocketServer(httpServer, {
+      cors: {
+        origin: 'http://localhost:3000',
+        credentials: true,
+      },
+    });
+
+    const onlineUsers = new Map();
+
+    io.on('connection', (socket) => {
+      socket.on('add-user', (userId) => {
+        onlineUsers.set(userId, socket.id);
+      });
+      socket.on('send-msg', (data) => {
+        const userSocket = onlineUsers.get(data.to);
+        if (userSocket) {
+          socket.to(userSocket).emit('msg-receive', (data.message));
+        }
+      });
+      // socket.on('add-user', (userId) => {
+      //   onlineUsers.set(userId, socket.id);
+      // });
+
+      // socket.on('send-msg', (data) => {
+      //   const sendUserSocket = onlineUsers.get(data.to);
+      //   if(sendUserSocket) {
+      //     socket.to
+      //   }
+      // });
+    });
+    // });
   }
 });
