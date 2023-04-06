@@ -4,10 +4,14 @@ import User from '../models/Users';
 const addMessage = async (req, res) => {
   try {
     const { from, to, message } = req.body;
-    const sender = await User.findById({ _id: from });
-    const receiver = await User.findById({ _id: to });
+    const sender = await User.findById(from);
+    const receiver = await User.findById(to);
     if (!sender || !receiver) {
-      return res.status(404).json('error');
+      return res.status(404).json({
+        message: 'The user has not been found',
+        data: null,
+        error: true,
+      });
     }
     const newMessage = await Message.create({
       message: { text: message },
