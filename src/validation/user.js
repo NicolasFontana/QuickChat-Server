@@ -28,10 +28,13 @@ const createUserValidation = (req, res, next) => {
         'string.pattern.base': 'Password must contain both letters and numbers',
         'string.empty': 'Password is a required field',
       }),
-    confirmPassword: Joi.string().required().equal(Joi.ref('password')).messages({
+    confirmPassword: Joi.string().equal(Joi.ref('password')).messages({
       'any.only': "Passwords don't match",
     }),
-    avatarImage: Joi.string().allow('').required(),
+    avatarImage: Joi.string().allow('').required().messages({
+      'string.base': 'Invalid avatar image, it must be a string',
+      'string.empty': 'Avatar image is a required field',
+    }),
   });
 
   const validation = Schema.validate(req.body);
