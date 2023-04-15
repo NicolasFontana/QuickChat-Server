@@ -39,7 +39,7 @@ mongoose.connect(MONGODB_URL, (error) => {
       socket.on('send-msg', (data) => {
         const userSocket = onlineUsers.get(data.to);
         if (userSocket) {
-          socket.to(userSocket).emit('msg-receive', (data.message));
+          socket.to(userSocket).emit('msg-receive', ({ from: data.from, msg: data.message }));
         }
       });
     });
