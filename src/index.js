@@ -42,17 +42,6 @@ mongoose.connect(MONGODB_URL, (error) => {
           socket.to(userSocket).emit('msg-receive', (data.message));
         }
       });
-      // socket.on('add-user', (userId) => {
-      //   onlineUsers.set(userId, socket.id);
-      // });
-
-      // socket.on('send-msg', (data) => {
-      //   const sendUserSocket = onlineUsers.get(data.to);
-      //   if(sendUserSocket) {
-      //     socket.to
-      //   }
-      // });
     });
-    // });
   }
 });
