@@ -1,5 +1,32 @@
 import User from '../models/Users';
 
+const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      res.status(404).json({
+        message: 'Missing id parameter',
+        data: null,
+        error: true,
+      });
+    }
+    const user = await User.findById(id);
+    user.password = undefined;
+    delete user.password;
+    res.status(200).json({
+      message: 'User found',
+      data: user,
+      error: false,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: 'User not found',
+      data: null,
+      error: true,
+    });
+  }
+};
+
 const setAvatar = async (req, res) => {
   try {
     const { id } = req.params;
@@ -64,4 +91,5 @@ const getAllUsers = async (req, res) => {
 export default {
   setAvatar,
   getAllUsers,
+  getUserById,
 };
